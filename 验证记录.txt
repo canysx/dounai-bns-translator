@@ -1,6 +1,8 @@
-豆奶剑灵翻译助手 · Windows v0.2.3
-PASS: Windows x64 self-contained GUI EXE published; 0 warnings and 0 errors
-PASS: 22,462 core checks, including custom hotkey validation and all 11,172 Hangul syllables
-Changed: user-defined single keys and Ctrl/Alt/Shift combinations; temporarily suspend start registration while editing app or injecting input; preserve Esc stop; selected avatar in executable/tray/floating entry; renamed app
-NOT RUN: real Windows hotkey registration, shortcut capture UI, tray/floating visual check, game keyboard integration
-SHA256: 2ccb1e9a6db5b2c7a57453f11978cc8b5fdb9382069e384d9ea069bbcc051cb5
+v0.2.5 · 2026-11-27
+
+Windows x64 Release 发布编译通过。
+保留原始 avatar.png 和 app.ico。
+保留非思考模式、置顶、凭据存储及自动输入行为。
+本环境无法运行 Windows 图形窗口，实际字体、DPI 缩放、圆角、滚动布局及游戏内覆盖效果尚待 Windows 实机验证。
+22,462 项核心检查通过（韩文键位转换、快捷键、API 请求和错误处理）。
+原始人物头像与 v0.2.3 包内源图逐字节一致。

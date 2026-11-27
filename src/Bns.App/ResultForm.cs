@@ -20,24 +20,24 @@ internal sealed class ResultForm:Form
     private bool closing,locked;
     internal ResultForm()
     {
-        Text="豆奶剑灵翻译助手 · 翻译 / 回复 · v0.2.3";AutoScaleMode=AutoScaleMode.Dpi;Font=new Font("Microsoft YaHei UI",10);BackColor=Ui.Yellow;ForeColor=Ui.Ink;
-        TopMost=true;Opacity=1;ClientSize=new Size(500,680);MinimumSize=new Size(420,400);StartPosition=FormStartPosition.Manual;Location=new Point(420,250);
-        var header=new FlowLayoutPanel{Dock=DockStyle.Fill,AutoSize=true,WrapContents=true,BackColor=Ui.Yellow};
-        header.Controls.AddRange([Ui.Button("截图",()=>CaptureRequested?.Invoke()),Ui.Button("设置",()=>SettingsRequested?.Invoke()),Ui.Button("绑定游戏",()=>BindRequested?.Invoke()),Ui.Button("收起",Hide)]);
+        Text="豆奶剑灵翻译助手 · 翻译 / 回复 · v0.2.5";AutoScaleMode=AutoScaleMode.Dpi;Font=new Font("Microsoft YaHei UI",10);BackColor=Ui.Canvas;ForeColor=Ui.Ink;
+        TopMost=true;Opacity=1;ClientSize=new Size(580,740);MinimumSize=new Size(440,440);StartPosition=FormStartPosition.Manual;Location=new Point(420,250);
+        var header=new FlowLayoutPanel{Dock=DockStyle.Fill,AutoSize=true,WrapContents=true,BackColor=Ui.Canvas,Padding=new Padding(0,4,0,4)};
+        header.Controls.AddRange([Ui.Primary(Ui.Button("＋ 截图翻译",()=>CaptureRequested?.Invoke())),Ui.Button("设置",()=>SettingsRequested?.Invoke()),Ui.Button("绑定游戏",()=>BindRequested?.Invoke()),Ui.Button("收起",Hide)]);
         var appearance=new FlowLayoutPanel{Dock=DockStyle.Fill,AutoSize=true,AutoSizeMode=AutoSizeMode.GrowAndShrink,WrapContents=true,Padding=new Padding(4)};
         var alpha=new TrackBar{Minimum=35,Maximum=100,Value=100,TickStyle=TickStyle.None,Width=95};alpha.ValueChanged+=(_,_)=>Opacity=alpha.Value/100.0;
         var size=new NumericUpDown{Minimum=12,Maximum=28,Value=14,Width=60};size.ValueChanged+=(_,_)=>{translation.Font=new Font(Font.FontFamily,(float)size.Value);korean.Font=translation.Font;chineseBack.Font=translation.Font;sequence.Font=new Font("Consolas",(float)size.Value);};
         var click=Ui.Button("穿透",()=>{locked=!locked;ApplyClickThrough();});
         appearance.Controls.AddRange([Ui.Label("不透明度"),alpha,Ui.Label("字号"),size,click]);
-        var transTab=new TabPage("翻译"){BackColor=Ui.Yellow};translation.BackColor=Ui.Yellow;translation.Font=new Font(Font.FontFamily,15);
-        var transActions=new FlowLayoutPanel{Dock=DockStyle.Bottom,AutoSize=true};
+        var transTab=new TabPage("聊天翻译"){BackColor=Color.White,Padding=new Padding(16)};translation.BackColor=Color.White;translation.Font=new Font(Font.FontFamily,14);
+        var transActions=new FlowLayoutPanel{Dock=DockStyle.Bottom,AutoSize=true,Padding=new Padding(0,12,0,0)};
         retry=Ui.Button("重试翻译",()=>RetryRequested?.Invoke());cancel=Ui.Button("取消请求",()=>CancelRequested?.Invoke());
         transActions.Controls.AddRange([original,Ui.Button("复制中文",()=>Copy(string.Join(Environment.NewLine,chat.Select(x=>x.Translation)))),retry,cancel]);
-        original.CheckedChanged+=(_,_)=>RenderChat();transTab.Controls.Add(translation);transTab.Controls.Add(transActions);
-        var replyTab=new TabPage("回复"){BackColor=Ui.Yellow};
+        original.CheckedChanged+=(_,_)=>RenderChat();var reading=Ui.Field(translation,100);reading.Dock=DockStyle.Fill;transTab.Controls.Add(reading);transTab.Controls.Add(transActions);
+        var replyTab=new TabPage("撰写回复"){BackColor=Color.White};
         // Keep natural row heights; scroll instead of compressing controls.
-        var replyScroll=new Panel{Dock=DockStyle.Fill,AutoScroll=true,BackColor=Ui.Yellow};
-        var grid=new TableLayoutPanel{Dock=DockStyle.Top,AutoSize=true,AutoSizeMode=AutoSizeMode.GrowAndShrink,ColumnCount=1,RowCount=12,Padding=new Padding(10)};
+        var replyScroll=new Panel{Dock=DockStyle.Fill,AutoScroll=true,BackColor=Color.White};
+        var grid=new TableLayoutPanel{Dock=DockStyle.Top,AutoSize=true,AutoSizeMode=AutoSizeMode.GrowAndShrink,ColumnCount=1,RowCount=12,Padding=new Padding(16)};
         grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,100));
         for(int row=0;row<12;row++)grid.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         void Box(TextBox box,int height,float fontSize) {
@@ -47,25 +47,37 @@ internal sealed class ResultForm:Form
         }
         Box(Chinese,82,11);Box(korean,76,14);Box(chineseBack,64,12);Box(sequence,110,12);
         sequence.Font=new Font("Consolas",12);
-        var promptLabel=Ui.Label("你想说的中文");grid.Controls.Add(promptLabel,0,0);grid.Controls.Add(Chinese,0,1);
+        var promptLabel=Ui.Label("你想说的中文");grid.Controls.Add(promptLabel,0,0);grid.Controls.Add(Ui.Field(Chinese,96),0,1);
         Context.Margin=new Padding(4,4,4,8);grid.Controls.Add(Context,0,2);
-        generate=Ui.Button("生成韩文与按键",()=>ReplyRequested?.Invoke());
+        generate=Ui.Primary(Ui.Button("生成韩文回复",()=>ReplyRequested?.Invoke()));
         var genRow=new FlowLayoutPanel{AutoSize=true,AutoSizeMode=AutoSizeMode.GrowAndShrink,Dock=DockStyle.Fill,WrapContents=true};
         genRow.Controls.AddRange([generate,Ui.Button("复制韩文",()=>Copy(korean.Text))]);grid.Controls.Add(genRow,0,3);
-        grid.Controls.Add(Ui.Label("韩文回复"),0,4);grid.Controls.Add(korean,0,5);
-        grid.Controls.Add(Ui.Label("中文回译"),0,6);grid.Controls.Add(chineseBack,0,7);
-        grid.Controls.Add(Ui.Label("按键顺序（标准韩文 두벌식）"),0,8);grid.Controls.Add(sequence,0,9);
+        grid.Controls.Add(Ui.Label("韩文回复"),0,4);grid.Controls.Add(Ui.Field(korean,90),0,5);
+        grid.Controls.Add(Ui.Label("中文回译"),0,6);grid.Controls.Add(Ui.Field(chineseBack,78),0,7);
+        grid.Controls.Add(Ui.Label("按键顺序（标准韩文 두벌식）"),0,8);grid.Controls.Add(Ui.Field(sequence,124),0,9);
         Approved.Margin=new Padding(4,10,4,8);grid.Controls.Add(Approved,0,10);
         var help=Ui.Label("先打开游戏聊天输入框并切到韩文；Esc 停止，回车自行发送。");
         help.MaximumSize=new Size(430,0);grid.Controls.Add(help,0,11);
         replyScroll.Controls.Add(grid);replyTab.Controls.Add(replyScroll);tabs.TabPages.Add(transTab);tabs.TabPages.Add(replyTab);
-        var root=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=1,RowCount=5,Margin=new Padding(0),Padding=new Padding(0)};
+        var root=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=1,RowCount=5,Margin=new Padding(0),Padding=new Padding(12)};
         root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,100));
         root.RowStyles.Add(new RowStyle(SizeType.AutoSize));root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         root.RowStyles.Add(new RowStyle(SizeType.Percent,100));root.RowStyles.Add(new RowStyle(SizeType.AutoSize));root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         header.Margin=target.Margin=status.Margin=appearance.Margin=new Padding(0);
         root.Controls.Add(header,0,0);root.Controls.Add(target,0,1);root.Controls.Add(tabs,0,2);root.Controls.Add(status,0,3);root.Controls.Add(appearance,0,4);
         Controls.Add(root);
+        status.ForeColor=Ui.Muted;status.Font=new Font(Font.FontFamily,9);status.Padding=new Padding(8,10,8,4);
+        target.ForeColor=Ui.Muted;target.Font=new Font(Font.FontFamily,9);target.Padding=new Padding(8,10,8,12);
+        appearance.Padding=new Padding(4,8,4,4);
+        tabs.DrawMode=TabDrawMode.OwnerDrawFixed;tabs.ItemSize=new Size(150,42);tabs.SizeMode=TabSizeMode.Fixed;
+        tabs.DrawItem+=(_,e)=>{
+            bool selected=e.Index==tabs.SelectedIndex;var rect=tabs.GetTabRect(e.Index);
+            using var bg=new SolidBrush(selected?Color.White:Ui.Canvas);e.Graphics.FillRectangle(bg,rect);
+            TextRenderer.DrawText(e.Graphics,tabs.TabPages[e.Index].Text,Font,rect,selected?Ui.Accent:Ui.Muted,TextFormatFlags.HorizontalCenter|TextFormatFlags.VerticalCenter);
+            if(selected){using var pen=new Pen(Ui.Accent,3);e.Graphics.DrawLine(pen,rect.Left+18,rect.Bottom-3,rect.Right-18,rect.Bottom-3);}
+        };
+        Ui.Theme(this);translation.BorderStyle=BorderStyle.None;
+        translation.Text="准备好阅读聊天了。\r\n\r\n点击「截图翻译」，框选游戏中的韩文聊天区域。";
         replyScroll.SizeChanged+=(_,_)=>{
             grid.Width=Math.Max(1,replyScroll.ClientSize.Width-SystemInformation.VerticalScrollBarWidth);
             int width=Math.Max(150,replyScroll.ClientSize.Width-45);
@@ -127,7 +139,9 @@ internal sealed class Bubble:Form
     {
         e.Graphics.SmoothingMode=System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
         e.Graphics.InterpolationMode=System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-        e.Graphics.DrawImage(avatar,ClientRectangle);base.OnPaint(e);
+        e.Graphics.Clear(Color.White);
+        e.Graphics.DrawImage(avatar,ClientRectangle);
+        base.OnPaint(e);
     }
     protected override void Dispose(bool disposing){if(disposing)avatar.Dispose();base.Dispose(disposing);}
 }
