@@ -1,5 +1,7 @@
 # 豆奶剑灵翻译助手
 
+> **创作说明：本工具由 GPT 编写，使用教程由 GPT 整理。**
+
 Windows 上的剑灵韩服聊天翻译与回复工具。当前版本：**v0.2.5**。
 
 **[下载最新版](https://github.com/canysx/dounai-bns-translator/releases/latest) · [📖 中文使用教程](docs/使用教程.md)**
