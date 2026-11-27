@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+release*/
+*.zip
+*.pdb
+.vs/
+*.user
+*.suo
+.env
+.env.*
+settings.json
+diagnostics.log

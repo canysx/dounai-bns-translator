@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWindowsForms>true</UseWindowsForms><EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><AssemblyName>豆奶剑灵翻译助手</AssemblyName><Product>豆奶剑灵翻译助手</Product><Title>豆奶剑灵翻译助手</Title><Version>0.2.3</Version>
+    <ApplicationManifest>app.manifest</ApplicationManifest><ApplicationIcon>app.ico</ApplicationIcon>
+    <PublishSingleFile>true</PublishSingleFile><IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract><SelfContained>true</SelfContained><DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="../Bns.Core/Bns.Core.csproj" /></ItemGroup>
+  <ItemGroup><EmbeddedResource Include="avatar.png" LogicalName="Bns.App.avatar.png" /></ItemGroup>
+</Project>

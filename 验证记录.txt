@@ -1,0 +1,6 @@
+豆奶剑灵翻译助手 · Windows v0.2.3
+PASS: Windows x64 self-contained GUI EXE published; 0 warnings and 0 errors
+PASS: 22,462 core checks, including custom hotkey validation and all 11,172 Hangul syllables
+Changed: user-defined single keys and Ctrl/Alt/Shift combinations; temporarily suspend start registration while editing app or injecting input; preserve Esc stop; selected avatar in executable/tray/floating entry; renamed app
+NOT RUN: real Windows hotkey registration, shortcut capture UI, tray/floating visual check, game keyboard integration
+SHA256: 2ccb1e9a6db5b2c7a57453f11978cc8b5fdb9382069e384d9ea069bbcc051cb5
